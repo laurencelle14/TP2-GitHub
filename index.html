@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUS — Commerce du Futur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cyan: #00f5ff;
+    --magenta: #ff006e;
+    --gold: #ffd60a;
+    --purple: #9d4edd;
+    --dark: #020408;
+    --dark2: #060c14;
+    --dark3: #0a1628;
+    --glass: rgba(0,245,255,0.04);
+    --border: rgba(0,245,255,0.15);
+    --text: #c8e6ff;
+    --text2: #5a8bb0;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+
+  body {
+    font-family:'Space Mono', monospace;
+    background: var(--dark);
+    color: var(--text);
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  body::before {
+    content:'';
+    position:fixed;
+    inset:0;
+    background-image:
+      linear-gradient(rgba(0,245,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,245,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridMove 20s linear infinite;
+    pointer-events:none;
+    z-index:0;
+  }
+
+  body::after {
+    content:'';
+    position:fixed;
+    inset:0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,245,255,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 100% 80%, rgba(255,0,110,0.07) 0%, transparent 50%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  @keyframes gridMove {
+    0%   { transform: translateY(0); }
+    100% { transform: translateY(60px); }
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; transform:scale(1); }
+    50%     { opacity:0.4; transform:scale(0.8); }
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  @keyframes breathe {
+    0%,100% { transform:translate(-50%,-50%) scale(1);    box-shadow:0 0 60px rgba(0,245,255,0.15),0 0 120px rgba(255,0,110,0.08),inset 0 0 60px rgba(0,245,255,0.05); }
+    50%     { transform:translate(-50%,-50%) scale(1.05); box-shadow:0 0 80px rgba(0,245,255,0.25),0 0 160px rgba(255,0,110,0.12),inset 0 0 80px rgba(0,245,255,0.08); }
+  }
+  @keyframes float {
+    0%,100% { transform:translateY(0) scale(1);    opacity:var(--op,0.6); }
+    50%     { transform:translateY(-20px) scale(1.2); opacity:1; }
+  }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(20px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  ::-webkit-scrollbar       { width:4px; }
+  ::-webkit-scrollbar-track { background: var(--dark); }
+  ::-webkit-scrollbar-thumb { background: rgba(0,245,255,0.3); }
+
+  /* ── SCANLINES ── */
+  .scanlines {
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:200;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+  }
+
+  /* ── NAV ── */
+  nav {
+    position:fixed;
+    top:0; left:0; right:0;
+    z-index:100;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:1.2rem 3rem;
+    background: rgba(2,4,8,0.7);
+    --backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family:'Orbitron', sans-serif;
+    font-weight:900;
+    font-size:1.4rem;
+    letter-spacing:0.3em;
+    color: var(--cyan);
+    text-shadow:0 0 20px var(--cyan);
+    text-decoration:none;
+  }
+  .nav-logo span { color:var(--magenta); text-shadow:0 0 20px var(--magenta); }
+
+  .nav-links { display:flex; gap:2.5rem; list-style:none; }
+  .nav-links a {
+    color:var(--text2);
+    text-decoration:none;
+    font-size:0.75rem;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    transition:color 0.3s;
+    position:relative;
+  }
+  .nav-links a::after {
+    content:'';
+    position:absolute;
+    bottom:-4px; left:0;
+    width:0; height:1px;
+    background:var(--cyan);
+    box-shadow:0 0 6px var(--cyan);
+    transition:width 0.3s;
+  }
+  .nav-links a:hover          { color:var(--cyan); }
+  .nav-links a:hover::after   { width:100%; }
+
+  .nav-actions { display:flex; align-items:center; gap:1.2rem; }
+
+  .nav-icon {
+    width:38px; height:38px;
+    border:1px solid var(--border);
+    background:var(--glass);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    transition:border-color 0.3s, background 0.3s;
+    position:relative;
+  }
+  .nav-icon:hover        { border-color:var(--cyan); background:rgba(0,245,255,0.08); }
+  .nav-icon svg          { width:16px; height:16px; stroke:var(--text2); transition:stroke 0.3s; }
+  .nav-icon:hover svg    { stroke:var(--cyan); }
+
+  .cart-badge {
+    position:absolute;
+    top:-5px; right:-5px;
+    width:16px; height:16px;
+    background:var(--magenta);
+    font-size:9px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Orbitron',sans-serif;
+    font-weight:700;
+    box-shadow:0 0 10px var(--magenta);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position:relative;
+    z-index:1;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    padding:8rem 3rem 4rem;
+    overflow:hidden;
+  }
+  .hero-content { max-width:680px; }
+
+  .hero-tag {
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:0.7rem;
+    letter-spacing:0.25em;
+    color:var(--cyan);
+    text-transform:uppercase;
+    padding:0.4rem 1rem;
+    border:1px solid var(--border);
+    background:var(--glass);
+    margin-bottom:2rem;
+    animation:fadeUp 0.6s ease both;
+  }
+  .hero-tag::before {
+    content:'';
+    width:6px; height:6px;
+    background:var(--cyan);
+    border-radius:50%;
+    box-shadow:0 0 8px var(--cyan);
+    animation:pulse 2s infinite;
+  }
+
+  .hero h1 {
+    font-family:'Orbitron', sans-serif;
+    font-weight:900;
+    font-size:clamp(3rem, 7vw, 6rem);
+    line-height:1;
+    letter-spacing:-0.02em;
+    margin-bottom:1.5rem;
+    animation:fadeUp 0.6s 0.1s ease both;
+  }
+  .hero h1 .line1 { display:block; color:#fff; }
+  .hero h1 .line2 {
+    display:block;
+    background:linear-gradient(90deg, var(--cyan), var(--magenta));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    filter:drop-shadow(0 0 30px rgba(0,245,255,0.4));
+  }
+
+  .hero-desc {
+    font-size:0.85rem;
+    line-height:1.8;
+    color:var(--text2);
+    max-width:460px;
+    margin-bottom:2.5rem;
+    animation:fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-cta {
+    display:flex;
+    gap:1rem;
+    flex-wrap:wrap;
+    animation:fadeUp 0.6s 0.3s ease both;
+  }
+
+  .btn-primary {
+    font-family:'Orbitron',sans-serif;
+    font-weight:700;
+    font-size:0.75rem;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    padding:1rem 2.5rem;
+    background:linear-gradient(90deg, var(--cyan), #0090ff);
+    color:var(--dark);
+    border:none;
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    position:relative;
+    overflow:hidden;
+    transition:transform 0.2s, box-shadow 0.2s;
+    clip-path:polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+  .btn-primary::before {
+    content:'';
+    position:absolute;
+    inset:0;
+    background:rgba(255,255,255,0.2);
+    transform:translateX(-100%) skew(-15deg);
+    transition:transform 0.4s;
+  }
+  .btn-primary:hover          { transform:translateY(-2px); box-shadow:0 0 30px rgba(0,245,255,0.4); }
+  .btn-primary:hover::before  { transform:translateX(200%) skew(-15deg); }
+
+  .btn-secondary {
+    font-family:'Orbitron',sans-serif;
+    font-weight:700;
+    font-size:0.75rem;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    padding:1rem 2.5rem;
+    background:transparent;
+    color:var(--cyan);
+    border:1px solid var(--border);
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    transition:background 0.3s, border-color 0.3s, box-shadow 0.3s;
+    clip-path:polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+  .btn-secondary:hover {
+    background:var(--glass);
+    border-color:var(--cyan);
+    box-shadow:0 0 20px rgba(0,245,255,0.1), inset 0 0 20px rgba(0,245,255,0.03);
+  }
+
+  /* ── HERO VISUAL ── */
+  .hero-visual {
+    position:absolute;
+    right:-5%; top:50%;
+    transform:translateY(-50%);
+    width:560px; height:560px;
+    animation:fadeUp 0.8s 0.4s ease both;
+  }
+
+  .orb-outer {
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    border:1px solid rgba(0,245,255,0.15);
+    animation:spin 20s linear infinite;
+  }
+  .orb-outer::before, .orb-outer::after {
+    content:'';
+    position:absolute;
+    border-radius:50%;
+    border:1px solid rgba(255,0,110,0.12);
+  }
+  .orb-outer::before { inset:30px; animation:spin 15s linear infinite reverse; }
+  .orb-outer::after  { inset:80px; animation:spin 10s linear infinite; border-color:rgba(0,245,255,0.08); }
+
+  .orb-inner {
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:220px; height:220px;
+    border-radius:50%;
+    background:radial-gradient(circle at 40% 40%, rgba(0,245,255,0.15), rgba(255,0,110,0.1), transparent 70%);
+    border:1px solid rgba(0,245,255,0.25);
+    box-shadow:0 0 60px rgba(0,245,255,0.15), 0 0 120px rgba(255,0,110,0.08), inset 0 0 60px rgba(0,245,255,0.05);
+    animation:breathe 4s ease-in-out infinite;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  .orb-text {
+    font-family:'Orbitron',sans-serif;
+    font-weight:900;
+    font-size:1.4rem;
+    color:var(--cyan);
+    text-shadow:0 0 20px var(--cyan);
+    text-align:center;
+  }
+  .orb-text small {
+    display:block;
+    font-size:0.55rem;
+    letter-spacing:0.2em;
+    color:var(--text2);
+    margin-top:4px;
+    font-weight:400;
+  }
+
+  .dot {
+    position:absolute;
+    border-radius:50%;
+    animation:float var(--dur,4s) ease-in-out infinite var(--delay,0s);
+  }
+  .dot-1 { top:10%; left:50%; width:6px; height:6px; --dur:3s;   --delay:0s;   --op:0.7; background:var(--cyan);    box-shadow:0 0 10px var(--cyan); }
+  .dot-2 { top:80%; left:20%; width:4px; height:4px; --dur:4s;   --delay:1s;   --op:0.5; background:var(--magenta); box-shadow:0 0  8px var(--magenta); }
+  .dot-3 { top:50%; left:90%; width:5px; height:5px; --dur:5s;   --delay:2s;   --op:0.6; background:var(--gold);    box-shadow:0 0  8px var(--gold); }
+  .dot-4 { top:25%; left:15%; width:3px; height:3px; --dur:3.5s; --delay:0.5s; --op:0.4; background:var(--cyan); }
+
+  .hero-ring {
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:160px; height:160px;
+    opacity:0.07;
+  }
+
+  /* ── STATS ── */
+  .stats-bar {
+    position:relative;
+    z-index:1;
+    display:flex;
+    padding:0 3rem;
+    margin-bottom:5rem;
+    animation:fadeUp 0.6s 0.5s ease both;
+  }
+
+  .stat-item {
+    flex:1;
+    padding:1.5rem 2rem;
+    border:1px solid var(--border);
+    border-right:none;
+    background:var(--glass);
+    --backdrop-filter:blur(10px);
+    position:relative;
+    overflow:hidden;
+  }
+  .stat-item:first-child { clip-path:polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 calc(100% - 12px)); }
+  .stat-item:last-child  { border-right:1px solid var(--border); clip-path:polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%); }
+  .stat-item::before {
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0;
+    height:2px;
+    background:linear-gradient(90deg, transparent, var(--cyan), transparent);
+    opacity:0;
+    transition:opacity 0.3s;
+  }
+  .stat-item:hover::before { opacity:1; }
+
+  .stat-num { font-family:'Orbitron',sans-serif; font-weight:900; font-size:2rem; color:#fff; line-height:1; }
+  .stat-num span { color:var(--cyan); text-shadow:0 0 15px var(--cyan); }
+  .stat-label { font-size:0.7rem; letter-spacing:0.15em; color:var(--text2); text-transform:uppercase; margin-top:0.4rem; }
+
+  /* ── TICKER ── */
+  .ticker-wrap {
+    position:relative;
+    z-index:1;
+    border-top:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+    background:rgba(0,245,255,0.02);
+    overflow:hidden;
+    padding:0.8rem 0;
+  }
+  .ticker { display:flex; gap:3rem; white-space:nowrap; animation:ticker 20s linear infinite; }
+  .ticker-item {
+    font-size:0.7rem;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--text2);
+    display:flex; align-items:center; gap:1rem;
+    flex-shrink:0;
+  }
+  .ticker-item::before {
+    content:'';
+    width:4px; height:4px;
+    background:var(--cyan);
+    border-radius:50%;
+    box-shadow:0 0 6px var(--cyan);
+  }
+
+  /* ── SECTIONS ── */
+  section { position:relative; z-index:1; padding:5rem 3rem; }
+  .section-no-top { padding-top:0; }
+
+  .section-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:3rem; }
+
+  .section-label {
+    font-size:0.7rem;
+    letter-spacing:0.25em;
+    color:var(--magenta);
+    text-transform:uppercase;
+    margin-bottom:0.5rem;
+    display:flex; align-items:center; gap:8px;
+  }
+  .section-label::before {
+    content:'';
+    display:block;
+    width:20px; height:1px;
+    background:var(--magenta);
+    box-shadow:0 0 6px var(--magenta);
+  }
+  .section-title { font-family:'Orbitron',sans-serif; font-weight:900; font-size:clamp(1.5rem,3vw,2.2rem); color:#fff; line-height:1.1; }
+
+  .see-all {
+    font-size:0.7rem; letter-spacing:0.15em; color:var(--cyan);
+    text-decoration:none; text-transform:uppercase;
+    border-bottom:1px solid var(--border); padding-bottom:2px;
+    transition:border-color 0.3s;
+  }
+  .see-all:hover { border-color:var(--cyan); }
+
+  /* ── PRODUCTS ── */
+  .featured-grid {
+    display:grid;
+    grid-template-columns:1.4fr 1fr 1fr;
+    gap:1px;
+    background:var(--border);
+  }
+
+  .product-card {
+    background:var(--dark2);
+    padding:2rem;
+    cursor:pointer;
+    transition:background 0.3s;
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+  .product-card::before {
+    content:'';
+    position:absolute; inset:0;
+    background:linear-gradient(135deg, rgba(0,245,255,0.03), transparent 60%);
+    opacity:0; transition:opacity 0.3s;
+  }
+  .product-card:hover          { background:var(--dark3); }
+  .product-card:hover::before  { opacity:1; }
+  .product-card.featured       { padding:2.5rem; grid-row:span 2; }
+
+  .product-svg {
+    width:100%; max-width:260px;
+    filter:drop-shadow(0 0 30px rgba(0,245,255,0.2));
+    transition:filter 0.3s, transform 0.3s;
+  }
+  .product-card:hover .product-svg {
+    filter:drop-shadow(0 0 50px rgba(0,245,255,0.4));
+    transform:translateY(-8px);
+  }
+  /* smaller SVGs for non-featured cards */
+  .product-svg-sm { max-width:160px; }
+
+  .product-badge {
+    display:inline-block;
+    font-size:0.6rem; letter-spacing:0.2em;
+    padding:0.3rem 0.8rem;
+    text-transform:uppercase;
+    margin-bottom:1.5rem;
+    font-family:'Orbitron',sans-serif; font-weight:700;
+  }
+  .badge-new  { background:rgba(0,245,255,0.12);  color:var(--cyan);    border:1px solid rgba(0,245,255,0.3); }
+  .badge-hot  { background:rgba(255,0,110,0.12);  color:var(--magenta); border:1px solid rgba(255,0,110,0.3); }
+  .badge-sale { background:rgba(255,214,10,0.12); color:var(--gold);    border:1px solid rgba(255,214,10,0.3); }
+
+  .product-img-area {
+    flex:1; display:flex;
+    align-items:center; justify-content:center;
+    padding:2rem 0; position:relative;
+  }
+  .product-img-area-sm { padding:1rem 0; }
+
+  .product-name { font-family:'Orbitron',sans-serif; font-weight:700; font-size:1.1rem; color:#fff; margin-bottom:0.5rem; line-height:1.2; }
+  .product-name-sm  { font-size:0.95rem; }
+  .featured .product-name { font-size:1.6rem; }
+
+  .product-desc { font-size:0.75rem; color:var(--text2); line-height:1.7; margin-bottom:1.5rem; }
+  .product-desc-sm { font-size:0.7rem; }
+
+  .product-footer { display:flex; align-items:center; justify-content:space-between; }
+
+  .price { font-family:'Orbitron',sans-serif; font-weight:900; font-size:1.4rem; color:var(--cyan); text-shadow:0 0 10px rgba(0,245,255,0.5); }
+  .featured .price { font-size:2rem; }
+  .price-sm   { font-size:1.1rem; }
+  .price-magenta { color:var(--magenta); text-shadow:0 0 10px rgba(255,0,110,0.5); }
+  .price-gold    { color:var(--gold);    text-shadow:0 0 10px rgba(255,214,10,0.5); }
+
+  .price-old { font-size:0.8rem; color:var(--text2); text-decoration:line-through; margin-left:8px; }
+
+  .add-btn {
+    width:40px; height:40px;
+    border:1px solid var(--border);
+    background:var(--glass);
+    color:var(--cyan);
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.4rem;
+    transition:background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+  .add-btn:hover { background:rgba(0,245,255,0.12); border-color:var(--cyan); box-shadow:0 0 20px rgba(0,245,255,0.3); }
+  .add-btn-gold { border-color:rgba(255,214,10,0.3); color:var(--gold); }
+  .add-btn-gold:hover { background:rgba(255,214,10,0.08); border-color:var(--gold); box-shadow:0 0 20px rgba(255,214,10,0.3); }
+
+  .featured .add-btn {
+    width:auto; padding:0.8rem 2rem;
+    font-size:0.75rem;
+    font-family:'Orbitron',sans-serif; font-weight:700;
+    letter-spacing:0.1em; text-transform:uppercase;
+  }
+
+  /* ── CORNER DECO ── */
+  .corner-deco { position:absolute; width:20px; height:20px; border-color:var(--cyan); border-style:solid; opacity:0.5; }
+  .corner-tl { top:0; left:0;     border-width:2px 0 0 2px; }
+  .corner-br { bottom:0; right:0; border-width:0 2px 2px 0; }
+
+  /* ── CATEGORIES ── */
+  .cats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; }
+
+  .cat-card {
+    padding:2rem 1.5rem;
+    border:1px solid var(--border);
+    background:var(--glass);
+    cursor:pointer;
+    transition:all 0.3s;
+    position:relative; overflow:hidden;
+    text-decoration:none; display:block;
+  }
+  .cat-card::after {
+    content:'';
+    position:absolute;
+    bottom:0; left:0; right:0; height:2px;
+    background:var(--cyan); box-shadow:0 0 10px var(--cyan);
+    transform:scaleX(0); transition:transform 0.3s;
+  }
+  .cat-card:hover        { background:rgba(0,245,255,0.04); border-color:rgba(0,245,255,0.3); }
+  .cat-card:hover::after { transform:scaleX(1); }
+
+  .cat-icon  { font-size:2rem; margin-bottom:1rem; display:block; }
+  .cat-name  { font-family:'Orbitron',sans-serif; font-weight:700; font-size:0.85rem; color:#fff; letter-spacing:0.05em; margin-bottom:0.3rem; }
+  .cat-count { font-size:0.7rem; color:var(--text2); letter-spacing:0.1em; }
+
+  .cat-cyan    { color:var(--cyan); }
+  .cat-magenta { color:var(--magenta); }
+  .cat-gold    { color:var(--gold); }
+  .cat-purple  { color:var(--purple); }
+
+  /* ── PROMO ── */
+  .promo-banner { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+
+  .promo-card {
+    padding:3rem; position:relative; overflow:hidden;
+    border:1px solid;
+    cursor:pointer; transition:transform 0.3s;
+    min-height:240px;
+    display:flex; flex-direction:column; justify-content:flex-end;
+    text-decoration:none;
+  }
+  .promo-card:hover { transform:translateY(-4px); }
+
+  .promo-cyan {
+    border-color:rgba(0,245,255,0.2);
+    background:linear-gradient(135deg, rgba(0,245,255,0.06), rgba(0,0,0,0) 60%), var(--dark2);
+  }
+  .promo-magenta {
+    border-color:rgba(255,0,110,0.2);
+    background:linear-gradient(135deg, rgba(255,0,110,0.06), rgba(0,0,0,0) 60%), var(--dark2);
+  }
+
+  .promo-corner-cyan    { border-color:var(--cyan); }
+  .promo-corner-magenta { border-color:var(--magenta); }
+
+  .promo-bg-num {
+    position:absolute; top:-20px; right:20px;
+    font-family:'Orbitron',sans-serif; font-weight:900;
+    font-size:8rem; opacity:0.04; color:#fff; line-height:1;
+    pointer-events:none;
+  }
+  .promo-tag  { font-size:0.65rem; letter-spacing:0.25em; text-transform:uppercase; margin-bottom:0.7rem; }
+  .promo-tag-cyan    { color:var(--cyan); }
+  .promo-tag-magenta { color:var(--magenta); }
+
+  .promo-title { font-family:'Orbitron',sans-serif; font-weight:900; font-size:1.8rem; color:#fff; line-height:1.1; margin-bottom:1rem; }
+
+  .promo-link { font-size:0.72rem; letter-spacing:0.15em; text-transform:uppercase; display:inline-flex; align-items:center; gap:6px; }
+  .promo-link-cyan    { color:var(--cyan); }
+  .promo-link-magenta { color:var(--magenta); }
+
+  /* ── FOOTER ── */
+  footer {
+    position:relative; z-index:1;
+    border-top:1px solid var(--border);
+    padding:3rem;
+    display:grid;
+    grid-template-columns:2fr 1fr 1fr 1fr;
+    gap:3rem;
+  }
+
+  .footer-logo { display:block; margin-bottom:1rem; font-size:1.2rem; }
+
+  .footer-desc { font-size:0.75rem; color:var(--text2); line-height:1.8; margin-bottom:1.5rem; }
+
+  .footer-socials { display:flex; gap:0.7rem; }
+  .social-btn {
+    width:34px; height:34px;
+    border:1px solid var(--border); background:var(--glass);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; font-size:0.75rem; color:var(--text2);
+    transition:all 0.3s; text-decoration:none; font-weight:700;
+  }
+  .social-btn:hover { border-color:var(--cyan); color:var(--cyan); }
+
+  .footer-heading { font-family:'Orbitron',sans-serif; font-weight:700; font-size:0.8rem; letter-spacing:0.15em; color:#fff; margin-bottom:1.5rem; }
+  .footer-links   { list-style:none; display:flex; flex-direction:column; gap:0.7rem; }
+  .footer-links a { font-size:0.75rem; color:var(--text2); text-decoration:none; letter-spacing:0.05em; transition:color 0.2s; }
+  .footer-links a:hover { color:var(--cyan); }
+
+  .footer-bottom {
+    position:relative; z-index:1;
+    border-top:1px solid var(--border);
+    padding:1.5rem 3rem;
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:0.7rem; color:var(--text2); letter-spacing:0.1em;
+  }
+  .footer-status { color:var(--cyan); letter-spacing:0.2em; font-size:0.65rem; }
+</style>
+</head>
+<body>
+
+<div class="scanlines"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">NEX<span>US</span></a>
+  <ul class="nav-links">
+    <li><a href="#">Catalogue</a></li>
+    <li><a href="#">Nouvelles Tech</a></li>
+    <li><a href="#">Éditions Limitées</a></li>
+    <li><a href="#">Universe</a></li>
+    <li><a href="#">IA Design</a></li>
+  </ul>
+  <div class="nav-actions">
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </div>
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </div>
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      <span class="cart-badge">3</span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-tag">Nouvelle collection 2247</div>
+    <h1>
+      <span class="line1">TECHNOLOGIE</span>
+      <span class="line2">DU FUTUR</span>
+    </h1>
+    <p class="hero-desc">Équipements de pointe conçus à la frontière de l'impossible. Matériaux quantiques, interfaces neurales et design orbital — bienvenue dans l'ère post-humaine.</p>
+    <div class="hero-cta">
+      <a href="#" class="btn-primary">
+        Explorer le catalogue
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#" class="btn-secondary">Voir les offres</a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="orb-outer">
+      <div class="dot dot-1"></div>
+      <div class="dot dot-2"></div>
+      <div class="dot dot-3"></div>
+      <div class="dot dot-4"></div>
+    </div>
+    <div class="orb-inner">
+      <div class="orb-text">NX-9<small>QUANTUM SERIES</small></div>
+    </div>
+    <svg class="hero-ring" viewBox="0 0 200 200">
+      <circle cx="100" cy="100" r="80" fill="none" stroke="#00f5ff" stroke-width="0.5" stroke-dasharray="8 4"/>
+      <circle cx="100" cy="100" r="50" fill="none" stroke="#ff006e" stroke-width="0.5" stroke-dasharray="4 8"/>
+      <circle cx="100" cy="100" r="20" fill="none" stroke="#00f5ff" stroke-width="1"/>
+      <line x1="100" y1="20" x2="100" y2="60" stroke="#00f5ff" stroke-width="0.5"/>
+      <line x1="100" y1="140" x2="100" y2="180" stroke="#00f5ff" stroke-width="0.5"/>
+      <line x1="20" y1="100" x2="60" y2="100" stroke="#00f5ff" stroke-width="0.5"/>
+      <line x1="140" y1="100" x2="180" y2="100" stroke="#00f5ff" stroke-width="0.5"/>
+    </svg>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item"><div class="stat-num">48<span>K+</span></div><div class="stat-label">Produits Tech</div></div>
+  <div class="stat-item"><div class="stat-num">2.1<span>M</span></div><div class="stat-label">Clients actifs</div></div>
+  <div class="stat-item"><div class="stat-num">99<span>%</span></div><div class="stat-label">Satisfaction</div></div>
+  <div class="stat-item"><div class="stat-num">24<span>/7</span></div><div class="stat-label">Support Neural</div></div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span class="ticker-item">Livraison quantique en 2h</span>
+    <span class="ticker-item">Nouveaux implants NX-9 disponibles</span>
+    <span class="ticker-item">Réalité augmentée V7 — stock limité</span>
+    <span class="ticker-item">Promo flash : -40% sur les drones</span>
+    <span class="ticker-item">Paiement en crédits galactiques accepté</span>
+    <span class="ticker-item">Livraison quantique en 2h</span>
+    <span class="ticker-item">Nouveaux implants NX-9 disponibles</span>
+    <span class="ticker-item">Réalité augmentée V7 — stock limité</span>
+    <span class="ticker-item">Promo flash : -40% sur les drones</span>
+    <span class="ticker-item">Paiement en crédits galactiques accepté</span>
+  </div>
+</div>
+
+<!-- PRODUITS EN VEDETTE -->
+<section>
+  <div class="section-header">
+    <div>
+      <div class="section-label">Sélection</div>
+      <div class="section-title">PRODUITS EN VEDETTE</div>
+    </div>
+    <a href="#" class="see-all">Voir tout →</a>
+  </div>
+
+  <div class="featured-grid">
+
+    <!-- Produit principal -->
+    <div class="product-card featured">
+      <div class="corner-deco corner-tl"></div>
+      <div class="corner-deco corner-br"></div>
+      <span class="product-badge badge-new">Nouveau</span>
+      <div class="product-img-area">
+        <svg class="product-svg" viewBox="0 0 280 220">
+          <ellipse cx="140" cy="110" rx="90" ry="80" fill="none" stroke="#00f5ff" stroke-width="1" opacity="0.3"/>
+          <path d="M80 130 Q80 60 140 55 Q200 60 200 130 L195 155 Q140 175 85 155 Z" fill="rgba(0,245,255,0.06)" stroke="#00f5ff" stroke-width="1.5"/>
+          <path d="M95 105 Q140 100 185 105 L180 135 Q140 140 100 135 Z" fill="rgba(0,245,255,0.15)" stroke="#00f5ff" stroke-width="1"/>
+          <path d="M105 110 Q140 106 175 110 L172 130 Q140 133 108 130 Z" fill="rgba(0,245,255,0.25)"/>
+          <rect x="65" y="100" width="18" height="35" rx="6" fill="rgba(0,245,255,0.1)" stroke="#00f5ff" stroke-width="1"/>
+          <rect x="197" y="100" width="18" height="35" rx="6" fill="rgba(0,245,255,0.1)" stroke="#00f5ff" stroke-width="1"/>
+          <line x1="120" y1="75" x2="120" y2="100" stroke="#00f5ff" stroke-width="0.5" opacity="0.5"/>
+          <line x1="140" y1="70" x2="140" y2="100" stroke="#00f5ff" stroke-width="0.5" opacity="0.5"/>
+          <line x1="160" y1="75" x2="160" y2="100" stroke="#00f5ff" stroke-width="0.5" opacity="0.5"/>
+          <circle cx="110" cy="150" r="3" fill="#00f5ff" opacity="0.8"/>
+          <circle cx="120" cy="155" r="2" fill="#ff006e" opacity="0.6"/>
+          <circle cx="170" cy="150" r="3" fill="#00f5ff" opacity="0.8"/>
+          <line x1="105" y1="118" x2="175" y2="118" stroke="rgba(0,245,255,0.6)" stroke-width="0.5">
+            <animateTransform attributeName="transform" type="translate" values="0,0;0,12;0,0" dur="2s" repeatCount="indefinite"/>
+          </line>
+          <path d="M100 165 L120 170 L140 168 L160 170 L180 165" fill="none" stroke="#00f5ff" stroke-width="0.5" opacity="0.4"/>
+        </svg>
+      </div>
+      <div class="product-name">NX-9 Neural Visor</div>
+      <div class="product-desc">Interface neurale de 6e génération avec projection holographique 8K et latence sub-milliseconde. Compatible avec 99% des systèmes cognitifs.</div>
+      <div class="product-footer">
+        <div>
+          <span class="price">4 299 CR</span>
+          <span class="price-old">5 800 CR</span>
+        </div>
+        <button class="add-btn">+ Ajouter au panier</button>
+      </div>
+    </div>
+
+    <!-- Montre -->
+    <div class="product-card">
+      <span class="product-badge badge-hot">Populaire</span>
+      <div class="product-img-area product-img-area-sm">
+        <svg class="product-svg product-svg-sm" viewBox="0 0 200 160">
+          <rect x="70" y="20" width="60" height="90" rx="14" fill="rgba(255,0,110,0.08)" stroke="#ff006e" stroke-width="1.5"/>
+          <rect x="82" y="10" width="36" height="14" rx="4" fill="rgba(255,0,110,0.1)" stroke="#ff006e" stroke-width="1"/>
+          <rect x="82" y="106" width="36" height="14" rx="4" fill="rgba(255,0,110,0.1)" stroke="#ff006e" stroke-width="1"/>
+          <rect x="76" y="28" width="48" height="60" rx="8" fill="rgba(255,0,110,0.15)"/>
+          <text x="100" y="52" text-anchor="middle" font-family="monospace" font-size="9" fill="#ff006e">22:47</text>
+          <line x1="82" y1="62" x2="118" y2="62" stroke="#ff006e" stroke-width="0.5" opacity="0.5"/>
+          <rect x="84" y="68" width="20" height="3" rx="1" fill="#ff006e" opacity="0.7"/>
+          <rect x="84" y="74" width="30" height="3" rx="1" fill="#ff006e" opacity="0.4"/>
+          <rect x="130" y="48" width="6" height="18" rx="3" fill="#ff006e" opacity="0.6"/>
+          <polyline points="82,88 88,88 91,78 94,98 97,82 100,88 106,88 109,80 112,88 118,88" fill="none" stroke="#ff006e" stroke-width="1"/>
+        </svg>
+      </div>
+      <div class="product-name product-name-sm">Chrono Pulse X</div>
+      <div class="product-desc product-desc-sm">Montre biotech avec capteurs médicaux quantiques.</div>
+      <div class="product-footer">
+        <span class="price price-sm price-magenta">899 CR</span>
+        <button class="add-btn">+</button>
+      </div>
+    </div>
+
+    <!-- Drone -->
+    <div class="product-card">
+      <span class="product-badge badge-sale">−30%</span>
+      <div class="product-img-area product-img-area-sm">
+        <svg class="product-svg product-svg-sm" viewBox="0 0 200 160">
+          <rect x="80" y="65" width="40" height="30" rx="8" fill="rgba(255,214,10,0.1)" stroke="#ffd60a" stroke-width="1.5"/>
+          <circle cx="100" cy="80" r="12" fill="rgba(255,214,10,0.15)" stroke="#ffd60a" stroke-width="1"/>
+          <circle cx="100" cy="80" r="5" fill="#ffd60a" opacity="0.5"/>
+          <line x1="80" y1="72" x2="50" y2="52" stroke="#ffd60a" stroke-width="1.5"/>
+          <line x1="120" y1="72" x2="150" y2="52" stroke="#ffd60a" stroke-width="1.5"/>
+          <line x1="80" y1="88" x2="50" y2="108" stroke="#ffd60a" stroke-width="1.5"/>
+          <line x1="120" y1="88" x2="150" y2="108" stroke="#ffd60a" stroke-width="1.5"/>
+          <ellipse cx="50" cy="52" rx="22" ry="5" fill="none" stroke="#ffd60a" stroke-width="1" opacity="0.6"/>
+          <ellipse cx="150" cy="52" rx="22" ry="5" fill="none" stroke="#ffd60a" stroke-width="1" opacity="0.6"/>
+          <ellipse cx="50" cy="108" rx="22" ry="5" fill="none" stroke="#ffd60a" stroke-width="1" opacity="0.6"/>
+          <ellipse cx="150" cy="108" rx="22" ry="5" fill="none" stroke="#ffd60a" stroke-width="1" opacity="0.6"/>
+          <line x1="87" y1="95" x2="82" y2="112" stroke="#ffd60a" stroke-width="1" opacity="0.5"/>
+          <line x1="113" y1="95" x2="118" y2="112" stroke="#ffd60a" stroke-width="1" opacity="0.5"/>
+          <line x1="78" y1="112" x2="86" y2="112" stroke="#ffd60a" stroke-width="1" opacity="0.5"/>
+          <line x1="114" y1="112" x2="122" y2="112" stroke="#ffd60a" stroke-width="1" opacity="0.5"/>
+        </svg>
+      </div>
+      <div class="product-name product-name-sm">AeroScout V7</div>
+      <div class="product-desc product-desc-sm">Drone de reconnaissance IA, 8h d'autonomie.</div>
+      <div class="product-footer">
+        <div>
+          <span class="price price-sm price-gold">1 400 CR</span>
+          <span class="price-old">2 000 CR</span>
+        </div>
+        <button class="add-btn add-btn-gold">+</button>
+      </div>
+    </div>
+
+    <!-- Écouteur -->
+    <div class="product-card">
+      <span class="product-badge badge-new">Nouveau</span>
+      <div class="product-img-area product-img-area-sm">
+        <svg class="product-svg product-svg-sm" viewBox="0 0 200 160">
+          <circle cx="100" cy="75" r="38" fill="rgba(0,245,255,0.06)" stroke="#00f5ff" stroke-width="1.5"/>
+          <circle cx="100" cy="75" r="25" fill="rgba(0,245,255,0.1)" stroke="#00f5ff" stroke-width="1"/>
+          <circle cx="100" cy="75" r="10" fill="rgba(0,245,255,0.3)" stroke="#00f5ff" stroke-width="1"/>
+          <circle cx="100" cy="75" r="3" fill="#00f5ff"/>
+          <rect x="96" y="110" width="8" height="30" rx="4" fill="rgba(0,245,255,0.1)" stroke="#00f5ff" stroke-width="1"/>
+          <rect x="92" y="130" width="16" height="8" rx="4" fill="rgba(0,245,255,0.2)"/>
+          <path d="M55 65 Q48 75 55 85" fill="none" stroke="#00f5ff" stroke-width="1" opacity="0.5"/>
+          <path d="M45 58 Q35 75 45 92" fill="none" stroke="#00f5ff" stroke-width="1" opacity="0.3"/>
+          <path d="M145 65 Q152 75 145 85" fill="none" stroke="#00f5ff" stroke-width="1" opacity="0.5"/>
+          <path d="M155 58 Q165 75 155 92" fill="none" stroke="#00f5ff" stroke-width="1" opacity="0.3"/>
+        </svg>
+      </div>
+      <div class="product-name product-name-sm">SynthAudio Neo</div>
+      <div class="product-desc product-desc-sm">Écouteur neural avec IA audio adaptative.</div>
+      <div class="product-footer">
+        <span class="price price-sm">549 CR</span>
+        <button class="add-btn">+</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="section-no-top">
+  <div class="section-header">
+    <div>
+      <div class="section-label">Explorer</div>
+      <div class="section-title">UNIVERS TECHNOLOGIQUES</div>
+    </div>
+  </div>
+  <div class="cats-grid">
+    <a href="#" class="cat-card">
+      <span class="cat-icon cat-cyan">◈</span>
+      <div class="cat-name">Cybernétique</div>
+      <div class="cat-count">1 247 produits</div>
+    </a>
+    <a href="#" class="cat-card">
+      <span class="cat-icon cat-magenta">⬡</span>
+      <div class="cat-name">Interfaces Holographiques</div>
+      <div class="cat-count">834 produits</div>
+    </a>
+    <a href="#" class="cat-card">
+      <span class="cat-icon cat-gold">◉</span>
+      <div class="cat-name">Drones & Robots</div>
+      <div class="cat-count">2 103 produits</div>
+    </a>
+    <a href="#" class="cat-card">
+      <span class="cat-icon cat-purple">⬟</span>
+      <div class="cat-name">IA Générative</div>
+      <div class="cat-count">568 produits</div>
+    </a>
+  </div>
+</section>
+
+<!-- PROMO -->
+<section class="section-no-top">
+  <div class="promo-banner">
+    <a href="#" class="promo-card promo-cyan">
+      <div class="corner-deco corner-tl promo-corner-cyan"></div>
+      <div class="corner-deco corner-br promo-corner-cyan"></div>
+      <div class="promo-bg-num">−40</div>
+      <div class="promo-tag promo-tag-cyan">Offre limitée · Expire dans 02:14:33</div>
+      <div class="promo-title">FLASH<br>SALE</div>
+      <div class="promo-link promo-link-cyan">Découvrir les offres →</div>
+    </a>
+    <a href="#" class="promo-card promo-magenta">
+      <div class="corner-deco corner-tl promo-corner-magenta"></div>
+      <div class="corner-deco corner-br promo-corner-magenta"></div>
+      <div class="promo-bg-num">NX</div>
+      <div class="promo-tag promo-tag-magenta">Exclusivité Nexus</div>
+      <div class="promo-title">Édition<br>Collector</div>
+      <div class="promo-link promo-link-magenta">Explorer la collection →</div>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <a href="#" class="nav-logo footer-logo">NEX<span>US</span></a>
+    <div class="footer-desc">La première plateforme de commerce du futur. Accès prioritaire aux technologies de demain, livrées dans votre réalité aujourd'hui.</div>
+    <div class="footer-socials">
+      <a href="#" class="social-btn">X</a>
+      <a href="#" class="social-btn">IN</a>
+      <a href="#" class="social-btn">YT</a>
+      <a href="#" class="social-btn">DC</a>
+    </div>
+  </div>
+  <div>
+    <div class="footer-heading">Navigation</div>
+    <ul class="footer-links">
+      <li><a href="#">Catalogue</a></li>
+      <li><a href="#">Nouvelles tech</a></li>
+      <li><a href="#">Éditions limitées</a></li>
+      <li><a href="#">Revendeurs</a></li>
+    </ul>
+  </div>
+  <div>
+    <div class="footer-heading">Compte</div>
+    <ul class="footer-links">
+      <li><a href="#">Connexion</a></li>
+      <li><a href="#">Créer un compte</a></li>
+      <li><a href="#">Mes commandes</a></li>
+      <li><a href="#">Programme fidélité</a></li>
+    </ul>
+  </div>
+  <div>
+    <div class="footer-heading">Support</div>
+    <ul class="footer-links">
+      <li><a href="#">IA Support 24/7</a></li>
+      <li><a href="#">Retours & garanties</a></li>
+      <li><a href="#">Documentation</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+
+<div class="footer-bottom">
+  <span>© 2247 NEXUS CORP. Tous droits réservés dans tous les univers connus.</span>
+  <span class="footer-status">SYS.STATUS: ONLINE ●</span>
+</div>
+
+</body>
+</html>
